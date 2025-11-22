@@ -9,16 +9,16 @@ pipeline {
         
         stage ("Git Checkout") {
             steps {
-                git 'https://github.com/Tejas886/Zomato1.git'          #Replace with your github url
+                git 'https://github.com/Tejas886/Zomato1.git'          
             }
         }
         
         stage ("Build Docker Image") {
             steps {
-                sh "tejasgowramma123/zomatoapp ."               # change with your docker repo name 
+                sh "tejasgowramma123/zomatoapp ."                
             }
         }
-        stage ("Tag & Push to DockerHub") {
+    /*    stage ("Tag & Push to DockerHub") {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker-login', passwordVariable: 'dockerhubpass', usernameVariable: 'dockerhublogin')]) {
