@@ -1,24 +1,28 @@
+provider "aws" {
+  region = "us-east-1"   
+}
+
 resource "aws_instance" "test-server" {
-  ami = "ami-0fa3fe0fa7920f68e"                            
-  instance_type = "t2.micro"
-  key_name = "bookmyshow"
-  vpc_security_group_ids = ["sg-018becd0736e04e44"]         
-  connection {
-     type = "ssh"
-     user = "ec2-user"
-     private_key = file("./bookmyshow.pem")                
-     host = self.public_ip
-     }
-  provisioner "remote-exec" {
-     inline = ["echo 'wait to start the instance' "]
-  }
+  ami                    = "ami-0fa3fe0fa7920f68e"          
+  instance_type          = "t3.small"
+  vpc_security_group_ids = ["sg-018becd0736e04e44"]        
+
+  # Automatically configure server at launch
+  user_data = <<-EOF
+    #!/bin/bash
+    yum update -y
+    yum install -y docker
+    systemctl start docker
+    systemctl enable docker
+    docker run -d -p 80:80 tejasgowramma123/zomatoapp
+  EOF
+
   tags = {
-     Name = "test-server"
-     }
-  provisioner "local-exec" {
-     command = "echo ${aws_instance.test-server.public_ip} > inventory"
-     }
-  provisioner "local-exec" {
-     command = "ansible-playbook /var/lib/jenkins/workspace/zomatoapp/terraformfiles/ansiblebook.yml"
-     }
+    Name = "test-server"
   }
+
+  # Save public IP to inventory file
+  provisioner "local-exec" {
+    command = "echo ${aws_instance.test-server.public_ip} > inventory"
+  }
+}
