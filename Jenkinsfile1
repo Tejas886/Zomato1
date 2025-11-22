@@ -1,49 +1,45 @@
 pipeline {
     agent any
-
     tools {
         jdk 'JAVA_HOME'
         nodejs 'nodejs25'
     }
-
+    
     stages {
-
+        
         stage ("Git Checkout") {
             steps {
-                git 'https://github.com/Tejas886/Zomato1.git'
+                git 'https://github.com/Tejas886/Zomato1.git'          
             }
         }
-
+        
         stage ("Build Docker Image") {
             steps {
-                sh "docker build -t tejasgowramma123/zomatoapp ."
+                sh "docker build -t tejasgowramma123/zomatoapp ."                
             }
         }
-
         stage ("Tag & Push to DockerHub") {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker-login', passwordVariable: 'dockerhubpass', usernameVariable: 'dockerhublogin')]) {
                         sh 'docker login -u ${dockerhublogin} -p ${dockerhubpass}'
-                        sh "docker push tejasgowramma123/zomatoapp"
+                        sh "docker push tejasgowramma123/zomatoapp "
                     }
                 }
             }
         }
-
-        stage("Config & Deployment") {
+         stage('Config & Deployment') {
             steps {
-                withCredentials([aws(credentialsId: 'awslogin', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-
+                
+                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awslogin', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     dir('terraformfiles') {
-                        sh 'sudo chmod 600 bookmyshow.pem'
-                        sh 'terraform init'
-                        sh 'terraform validate'
-                        sh 'terraform apply --auto-approve'
-                    }
-
-                }
-            }
-        }
+                    sh 'sudo chmod 600 bookmyshow.pem'
+                    sh 'terraform init'
+                    sh 'terraform validate'
+                    sh 'terraform apply --auto-approve'
+}
+    }
+}
+} 
     }
 }
