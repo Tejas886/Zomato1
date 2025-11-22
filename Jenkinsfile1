@@ -28,18 +28,15 @@ pipeline {
                 }
             }
         }
-         stage('Config & Deployment') {
-            steps {
-                
-                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awslogin', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-                    dir('terraformfiles') {
-                    sh 'sudo chmod 400 bookmyshow.pem'
-                    sh 'terraform init'
-                    sh 'terraform validate'
-                    sh 'terraform apply --auto-approve'
-}
-    }
-}
-} 
+        stage('Config & Deployment') {
+    steps {
+        withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awslogin', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+            dir('terraformfiles') {
+                sh 'sudo chmod 400 bookmyshow.pem' // Correct permissions for private key
+                sh 'terraform init'
+                sh 'terraform validate'
+                sh 'terraform apply --auto-approve' // This command is triggering the failure
+            }
+        }
     }
 }
