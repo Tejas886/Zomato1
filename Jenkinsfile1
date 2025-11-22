@@ -18,7 +18,7 @@ pipeline {
                 sh "tejasgowramma123/zomatoapp ."               # change with your docker repo name 
             }
         }
-       /* stage ("Tag & Push to DockerHub") {
+        stage ("Tag & Push to DockerHub") {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker-login', passwordVariable: 'dockerhubpass', usernameVariable: 'dockerhublogin')]) {
