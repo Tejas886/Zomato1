@@ -9,13 +9,13 @@ pipeline {
         
         stage ("Git Checkout") {
             steps {
-                git 'https://github.com/Tejas886/Zomato1.git'
+                git 'https://github.com/Tejas886/Zomato1.git'          
             }
         }
         
         stage ("Build Docker Image") {
             steps {
-                sh "docker build -t tejasgowramma123/zomatoapp ."
+                sh "docker build -t tejasgowramma123/zomatoapp ."               
             }
         }
         
@@ -24,7 +24,7 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'docker-login', passwordVariable: 'dockerhubpass', usernameVariable: 'dockerhublogin')]) {
                         sh 'docker login -u ${dockerhublogin} -p ${dockerhubpass}'
-                        sh "docker push tejasgowramma123/zomatoapp "
+                        sh "docker push tejasgowramma123/zomatoapp"
                     }
                 }
             }
@@ -32,14 +32,10 @@ pipeline {
         
         stage('Config & Deployment') {
             steps {
-                
                 withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awslogin', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     dir('terraformfiles') {
-                        // Ensure correct permissions for the private key
-                        sh 'sudo chmod 400 bookmyshow.pem' 
                         sh 'terraform init'
                         sh 'terraform validate'
-                        // This executes the fixed command in your main.tf
                         sh 'terraform apply --auto-approve'
                     }
                 }
