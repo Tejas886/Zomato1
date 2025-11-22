@@ -39,7 +39,7 @@ pipeline {
                         sh 'sudo chmod 400 bookmyshow.pem' 
                         sh 'terraform init'
                         sh 'terraform validate'
-                        // The fix for the previous failure is inside main.tf, triggered by this command
+                        // This executes the fixed command in your main.tf
                         sh 'terraform apply --auto-approve'
                     }
                 }
