@@ -15,7 +15,7 @@ pipeline {
         
         stage ("Build Docker Image") {
             steps {
-                sh "tejasgowramma123/zomatoapp ."                
+                sh "docker build -t tejasgowramma123/zomatoapp ."                
             }
         }
     /*    stage ("Tag & Push to DockerHub") {
