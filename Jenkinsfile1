@@ -9,15 +9,16 @@ pipeline {
         
         stage ("Git Checkout") {
             steps {
-                git 'https://github.com/Tejas886/Zomato1.git'          
+                git 'https://github.com/Tejas886/Zomato1.git'
             }
         }
         
         stage ("Build Docker Image") {
             steps {
-                sh "docker build -t tejasgowramma123/zomatoapp ."               
+                sh "docker build -t tejasgowramma123/zomatoapp ."
             }
         }
+        
         stage ("Tag & Push to DockerHub") {
             steps {
                 script {
@@ -28,14 +29,20 @@ pipeline {
                 }
             }
         }
+        
         stage('Config & Deployment') {
-    steps {
-        withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awslogin', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
-            dir('terraformfiles') {
-                sh 'sudo chmod 400 bookmyshow.pem' // Correct permissions for private key
-                sh 'terraform init'
-                sh 'terraform validate'
-                sh 'terraform apply --auto-approve' // This command is triggering the failure
+            steps {
+                
+                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'awslogin', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                    dir('terraformfiles') {
+                        // Ensure correct permissions for the private key
+                        sh 'sudo chmod 400 bookmyshow.pem' 
+                        sh 'terraform init'
+                        sh 'terraform validate'
+                        // The fix for the previous failure is inside main.tf, triggered by this command
+                        sh 'terraform apply --auto-approve'
+                    }
+                }
             }
         }
     }
