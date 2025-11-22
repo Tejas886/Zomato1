@@ -1,12 +1,12 @@
 resource "aws_instance" "test-server" {
-  ami = "ami-0fa3fe0fa7920f68e"                            #replace with your AMI ID of amazon linux 
-  instance_type = "t3.small"
+  ami = "ami-0fa3fe0fa7920f68e"                            
+  instance_type = "t2.micro"
   key_name = "bookmyshow"
-  vpc_security_group_ids = ["sg-018becd0736e04e44"]         #replace the security groups of your zomato instance
+  vpc_security_group_ids = ["sg-018becd0736e04e44"]         
   connection {
      type = "ssh"
      user = "ec2-user"
-     private_key = file("./bookmyshow.pem")                #replace with the your key pair
+     private_key = file("./bookmyshow.pem")                
      host = self.public_ip
      }
   provisioner "remote-exec" {
