@@ -15,7 +15,7 @@ pipeline {
         
         stage ("Build Docker Image") {
             steps {
-                sh "docker build -t tejasgowramma123/zomatoapp ."               
+                sh "docker build --no-cache -t tejasgowramma123/zomatoapp ."               
             }
         }
         
